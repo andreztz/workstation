@@ -1,0 +1,4 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for roles/rust
+rust_installer_url: "https://sh.rustup.rs"

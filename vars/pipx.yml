@@ -1,0 +1,9 @@
+pipx_packages:
+  - name: ansible
+    include_deps: true
+    inject_packages: 
+      - argcomplete
+    install_apps: true
+  - name: hatch
+  - name: streamlink
+    # - name: streamrec

@@ -1,0 +1,109 @@
+---
+- name: Setup Workstation
+  hosts: localhost
+  become: true
+  roles:
+    - go
+    - rust
+    - neovim
+  tasks:
+    - name: Include debian packages
+      ansible.builtin.include_vars:
+        file: "{{ ansible_distribution.lower() }}.yml"
+
+    - name: Include pipx packages
+      ansible.builtin.include_vars:
+        file: "pipx.yml"
+
+    - name: Install basic packages
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
+
+    - name: Clone AwesomeWM Config
+      ansible.builtin.git:
+        repo: "https://github.com/andreztz/awesome"
+        dest: "~/.config/awesome"
+        update: false
+      become: false
+
+    - name: Clone Net Widgets
+      ansible.builtin.git:
+        repo: "https://github.com/pltanton/net_widgets.git"
+        dest: "~/.config/awesome/net_widgets"
+        update: false
+      become: false
+
+    - name: Clone Vicious Widgets
+      ansible.builtin.git:
+        repo: "https://github.com/vicious-widgets/vicious.git"
+        dest: "~/.config/awesome/vicious"
+        update: false
+      become: false
+
+    - name: Clone dotfiles
+      ansible.builtin.git:
+        repo: "https://github.com/andreztz/dotfiles.git"
+        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.dotfiles"
+        update: false
+      become: false
+
+    - name: Clone Neovim config files
+      ansible.builtin.git:
+        repo: "https://github.com/andreztz/editor.git"
+        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/nvim"
+        update: false
+      become: false
+
+    - name: Clone oh-my-zsh
+      ansible.builtin.git:
+        repo: "https://github.com/ohmyzsh/ohmyzsh.git"
+        dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.oh-my-zsh"
+        update: true
+      become: false
+
+    - name: Install pyenv
+      ansible.builtin.shell: |
+        curl https://pyenv.run | bash
+      args:
+        creates: "{{ lookup('ansible.builtin.env', 'HOME') }}/.pyenv"
+      become: false
+
+
+    - name: Install stow modules
+      stow:
+        state: supress
+        package: '{{ item }}'
+        dir: "{{ lookup('ansible.builtin.env', 'HOME') }}/.dotfiles"
+      with_items:
+        - bash
+        - git
+        - hatch
+        - pypoetry
+        - qtile
+        - rofi
+        - ruff
+        - streamlink
+        - tmux
+        - zsh
+      become: false # TODO: mover lista de modulos stow para vars/stow.yml
+
+    - name: Clone Zk
+      ansible.builtin.git:
+        repo: "https://github.com/zk-org/zk.git"
+        dest: "/tmp/zk"
+
+    - name: Build and Install Zk
+      ansible.builtin.shell:
+        cmd: make install
+        chdir: /tmp/zk
+        creates: "{{ lookup('ansible.builtin.env', 'HOME') }}/go/bin/zk"
+        executable: "/usr/bin/bash"
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin"
+      become: false
+
+# TODO: tarefa para instalar fontes
+# TODO: tarefa para instalar pacotes python com pipx
+# TODO: tarefa para instalar gh-cli

@@ -1,0 +1,48 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/rust
+- name: Define user home directory
+  set_fact:
+    rust_home: "{{ lookup('env', 'HOME') }}"
+
+- name: Check if Rust is installed
+  command: "which rustc"
+  register: rust_installed
+  ignore_errors: true
+  changed_when: false
+  become: false
+
+- name: Download Rust installer
+  get_url:
+    url: "https://sh.rustup.rs"
+    dest: "{{ rust_home }}/rustup-init.sh"
+    mode: '0644'
+  become: false
+  when: rust_installed.rc != 0
+
+- name: Set execute permissions on Rust installer
+  file:
+    path: "{{ rust_home }}/rustup-init.sh"
+    mode: '0755'
+  become: false
+  when: rust_installed.rc != 0
+
+- name: Execute Rust installer
+  command: "{{ rust_home }}/rustup-init.sh -y"
+  args:
+    creates: "{{ rust_home }}/.cargo/bin/rustup"
+  become: false
+  when: rust_installed.rc != 0
+
+- name: Ensure Rust is updated to the latest version
+  shell: "{{ rust_home }}/.cargo/bin/rustup update"
+  become: false
+  environment:
+    PATH: "{{ rust_home }}/.cargo/bin:{{ ansible_env.PATH }}"
+
+- name: Ensure Rust environment is loaded
+  lineinfile:
+    path: "{{ rust_home }}/.bashrc"
+    line: "export PATH={{ rust_home }}/.cargo/bin:$PATH"
+    create: yes
+  become: false

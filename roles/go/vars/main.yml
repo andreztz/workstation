@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for roles/go
+go_version: "1.24.1"
+go_arch: "amd64"
+go_install_dir: "/usr/local"
+go_tarball_url: "https://go.dev/dl/go{{go_version}}.linux-{{go_arch}}.tar.gz"

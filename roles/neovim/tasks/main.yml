@@ -1,0 +1,40 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/neovim
+- name: Check if Neovim is installed
+  stat:
+    path: "{{ neovim_install_path }}"
+  register: neovim_installed
+
+- name: Download Neovim Appimage
+  ansible.builtin.get_url:
+    url: "{{neovim_appimage_url}}"
+    dest: "/tmp/nvim.appimage"
+    mode: '0755'
+  when: not neovim_installed.stat.exists
+
+- name: Mover AppImage para /usr/bin
+  ansible.builtin.copy:
+    src: "/tmp/nvim.appimage"
+    dest: "{{neovim_install_path}}"
+    remote_src: true
+    mode: '0755'
+  when: not neovim_installed.stat.exists
+
+- name: Criar diretório de configuração
+  ansible.builtin.file:
+    path: "{{config_dir}}"
+    state: directory
+    owner: "{{lookup('env', 'USER')}}" 
+    group: "{{lookup('env', 'USER')}}"
+  become: false
+
+- name: Clonar repositório de configuração
+  ansible.builtin.git:
+    repo: "{{config_repo}}"
+    dest: "{{config_dir}}"
+    clone: true
+    update: false
+    force: true
+  become: false
+

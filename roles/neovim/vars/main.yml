@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for roles/neovim
+neovim_appimage_url: "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage"
+neovim_install_path: "/usr/bin/nvim"
+config_repo: "https://github.com/andreztz/editor.git"
+config_dir: "{{ lookup('env', 'HOME') }}/.config/nvim"

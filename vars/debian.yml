@@ -1,0 +1,23 @@
+packages:
+  - awesome
+  - rofi
+  - playerctl
+  - picom
+  - redshift
+  - redshift-gtk
+  - terminology
+  - stow
+  - zsh
+  - gnupg
+  - xclip
+  - curl
+  - fd-find
+  - keepassxc
+  # multimidia
+  - mpv
+  - soundconverter
+  - alsa-tools
+  # development tools
+  - git
+  - pipx
+  - tmux
