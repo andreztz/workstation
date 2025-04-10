@@ -11,13 +11,19 @@ packages:
   - gnupg
   - xclip
   - curl
-  - fd-find
   - keepassxc
   # multimidia
   - mpv
   - soundconverter
   - alsa-tools
+  - alsa-tools-gui
   # development tools
   - git
   - pipx
   - tmux
+  - zeal
+  # Dependencias do neovim
+  - nodejs
+  - npm
+  - ripgrep
+  - fd-find
