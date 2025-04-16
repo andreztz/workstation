@@ -51,6 +51,13 @@
         update: false
       become: false
 
+    - name: Clone tmux/tpm plugin manager
+      ansible.builtin.git:
+        repo: https://github.com/tmux-plugins/tpm
+        dest: ~/.tmux/plugins/tpm
+        update: false
+      become: false
+
     - name: Clone Neovim config files
       ansible.builtin.git:
         repo: "https://github.com/andreztz/editor.git"
