@@ -3,9 +3,11 @@
   hosts: localhost
   become: true
   roles:
-    - go
-    - rust
-    - neovim
+    - role: go
+      when: ansible_os_family == "Debian"
+    - role: neovim
+      when: ansible_os_family == "Debian"
+    - role: rust
   tasks:
     - name: Include base packages
       ansible.builtin.include_vars:
@@ -63,14 +65,6 @@
         update: true
       become: false
 
-    - name: Install pyenv
-      ansible.builtin.shell: |
-        curl https://pyenv.run | bash
-      args:
-        creates: "{{ lookup('ansible.builtin.env', 'HOME') }}/.pyenv"
-      become: false
-
-
     - name: Install stow modules
       stow:
         state: supress
@@ -89,10 +83,19 @@
         - zsh
       become: false # TODO: mover lista de modulos stow para vars/stow.yml
 
+    - name: Install pyenv
+      ansible.builtin.shell: |
+        curl https://pyenv.run | bash
+      args:
+        creates: "{{ lookup('ansible.builtin.env', 'HOME') }}/.pyenv"
+      become: false
+      when: ansible_os_family == "Debian"
+
     - name: Clone Zk
       ansible.builtin.git:
         repo: "https://github.com/zk-org/zk.git"
         dest: "/tmp/zk"
+      when: ansible_os_family == "Debian"
 
     - name: Build and Install Zk
       ansible.builtin.shell:
@@ -103,6 +106,15 @@
       environment:
         PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin"
       become: false
+      when: ansible_os_family == "Debian"
+
+    - name: Install Uv
+      ansible.builtin.shell: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+      args:
+        creates: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local/bin/uv"
+      become: false
+      when: ansible_os_family == "Debian"
 
 # TODO: tarefa para instalar fontes
 # TODO: tarefa para instalar pacotes python com pipx
