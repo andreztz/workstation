@@ -1,0 +1,49 @@
+packages:
+  - awesome
+  - rofi
+  - playerctl
+  - picom
+  - redshift
+  - terminology
+  - stow
+  - zsh
+  - gnupg
+  - xclip
+  - curl
+  - keepassxc
+  - beep
+  - eza
+  - arandr
+  - trash-cli
+  - yazi
+  # multimidia
+  - mpv
+  - soundconverter
+  - alsa-tools
+  # development tools
+  - git
+  - github-cli
+  - python-pipx
+  - tmux
+  - zeal
+  # WARNING: para compilar o virtualbox fornecido pelo `virtualbox-host-dkms`
+  # instalar os módulos de  cabeçalho apripriados para o kernels 
+  # por exemplo `linux-lts-headers`
+  # modulos necessários: vboxdrv, vboxnetadp, vboxnetflt
+  - virtualbox
+  - virtualbox-host-dkms 
+  - virtualbox-guest-iso
+  - vagrant
+  # Dependencias do neovim
+  - neovim
+  - nodejs
+  - npm
+  - yarn
+  - ripgrep
+  - fd
+  - go
+  - proton-vpn-gtk-app
+
+
+aur-packages:
+  - redshift-gtk-git AUR
